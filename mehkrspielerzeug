@@ -1,0 +1,153 @@
+#include <stdio.h>
+#include <stdbool.h>
+#include <stdlib.h>
+#include <time.h>
+#include <memory.h>
+
+bool spiel=true;
+
+int *mitspielCount(){
+
+
+
+}
+
+
+
+
+//Kompletter Würfelvorgang (3 mal würfeln und beliebige behalten)
+void wuerfeln(){
+
+    int mitspielerCount;
+
+    printf("Wieviele Spieler nehmen teil?\nAnzahl:");
+    scanf("%d", &mitspielerCount);
+    char *namen[mitspielerCount];
+    for (int j = 0; j < mitspielerCount; ++j) {                     //muss noch eigene Funktion werden, Pointerarrayübergabe ist mittelmäßig spaßbehaftet
+        namen[j]=malloc(100);
+        printf("Name von Mitspieler %d:", j+1 );
+        scanf("%s", namen[j]);
+    }
+
+
+
+
+
+    int wuerfe[6];
+
+    bool behalten[mitspielerCount][6];
+    char auswahlLett [5]= {'a','b','c','d','e'};
+    //Initialisierung
+    for (int l = 0; l < mitspielerCount; ++l) {
+        for (int i = 0; i < 5; i++) {
+            behalten[l][i] = false;
+        }
+    }
+
+    for (int k = 0; k < mitspielerCount; ++k) {
+        bool ausgabe=true;
+        for (int durchgang = 1; durchgang <= 3; durchgang++) {
+
+
+            //Würfeln und Würfe ausgeben
+            for (int i = 0; i < 5; i++) {
+                if (!behalten[k][i]) {
+                    int zahl = (rand() % 6) + 1;
+                    wuerfe[i] = zahl;
+                };
+                printf("Würfel %c: %d\n", auswahlLett[i], wuerfe[i]);
+            }
+            printf("\n\n\n");
+
+
+            //Überprüfen welche Würfel behalten werden
+            if (ausgabe == true) {
+
+                char choices[5];
+                int letters[5] = {0, 0, 0, 0, 0};                    //jeder Buchstabe nur einmal array
+                if (durchgang == 1) printf("Welche Würfel möchtest du behalten?\nSchreibe Buchstaben der Würfel direkt hintereinander\nMöchtest du keinen behalten, schreibe 'k'\n");
+                printf("Würfel von %s: ", namen[k]);
+                scanf(" %s", choices);
+                bool reset;
+                int lange = strlen(choices);
+                int letterToNumber;
+                int i = 0;
+                while (i != lange) {
+
+
+                    switch (choices[i]) {
+                        case 'a':
+                            letterToNumber = 0;
+                            reset = false;
+                            break;
+
+                        case 'b':
+                            letterToNumber = 1;
+                            reset=false;
+                            break;
+
+                        case 'c':
+                            letterToNumber = 2;
+                            reset=false;
+                            break;
+
+                        case 'd':
+                            letterToNumber = 3;
+                            reset=false;
+                            break;
+
+                        case 'e':
+                            letterToNumber = 4;
+                            reset=false;
+                            break;
+
+                        case 'k':
+                            letters[5] = 0, 0, 0, 0, 0;
+                            reset = true;
+                            break;
+
+                        default:
+                            break;
+
+                    }
+                    if (reset == true) break;
+                    if (letters[letterToNumber] < 1) {
+                        letters[letterToNumber]++;
+                        behalten[k][letterToNumber] = true;
+                    }
+                    i++;
+                }
+                for (int j = 0; j < 6; j++) {
+                    if (letters[j] == 0) {
+                        behalten[k][j] = false;
+                    }
+                }
+                if (durchgang == 2) ausgabe = false;
+
+
+            }
+            printf("\n");
+
+
+        }
+    }
+    return;
+}
+
+
+//geht den Spielvorgang jede Runde durch.
+void spielVorgang(){
+    while(spiel==true){
+        //TODO: Spielvorgang durchlaufen
+        wuerfeln();
+
+        spiel = false;
+    }
+}
+
+
+int main() {
+    srand(time(NULL));
+//mitspielCount();
+   spielVorgang();
+}
